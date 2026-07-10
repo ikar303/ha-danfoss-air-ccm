@@ -44,6 +44,11 @@ class DanfossCoordinator(DataUpdateCoordinator):
 
         return {
             "fan_step": self.client.get_fan_step(),
+
+            "temp_01": self.client.get_temp_01(),
+            "temp_02": self.client.get_temp_02(),
+            "temp_03": self.client.get_temp_03(),
+            "temp_04": self.client.get_temp_04(),
         }
 
     async def set_fan_step(self, value):

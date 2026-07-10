@@ -12,6 +12,10 @@ from .const import (
     PARAM_BASIC_SUPPLY,
     PARAM_BASIC_EXTRACT,
     PARAM_RUN_MODE,
+    PARAM_TEMP_01,
+    PARAM_TEMP_02,
+    PARAM_TEMP_03,
+    PARAM_TEMP_04,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -98,6 +102,17 @@ class DanfossClient:
 
 
         return self._exchange(frame)
+    def get_temp_01(self):
+        return self.get_parameter_short(PARAM_TEMP_01)
+
+    def get_temp_02(self):
+        return self.get_parameter_short(PARAM_TEMP_02)
+
+    def get_temp_03(self):
+        return self.get_parameter_short(PARAM_TEMP_03)
+
+    def get_temp_04(self):
+        return self.get_parameter_short(PARAM_TEMP_04)
 
     #
     # Danfoss API
@@ -113,6 +128,16 @@ class DanfossClient:
     def get_parameter_byte(self, parameter: int):
         data = self.read_parameter(parameter)
         return data[0]
+    def get_parameter_short(self, parameter):
+
+        data = self.read_parameter(parameter)
+
+        value = (data[0] << 8) | data[1]
+
+        if value >= 32768:
+            value -= 65536
+
+        return value / 100.0
         
     def get_basic_supply(self):
         return self.get_parameter_byte(PARAM_BASIC_SUPPLY)

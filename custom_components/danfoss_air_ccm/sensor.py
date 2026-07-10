@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
+from .entity import DanfossEntity
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -13,22 +13,78 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(
         [
             DanfossFanStepSensor(coordinator),
+            DanfossTemperature01Sensor(coordinator),
+            DanfossTemperature02Sensor(coordinator),
+            DanfossTemperature03Sensor(coordinator),
+            DanfossTemperature04Sensor(coordinator),
         ]
     )
 
 
-class DanfossFanStepSensor(CoordinatorEntity, SensorEntity):
+class DanfossFanStepSensor(DanfossEntity, SensorEntity):
 
-    _attr_has_entity_name = True
     _attr_name = "Fan Step"
 
     def __init__(self, coordinator):
-
         super().__init__(coordinator)
-
         self._attr_unique_id = "danfoss_fan_step"
 
     @property
     def native_value(self):
-
         return self.coordinator.data["fan_step"]
+
+
+class DanfossTemperature01Sensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Outdoor Temperature"
+    _attr_native_unit_of_measurement = "°C"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_temp_01"
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["temp_01"]
+
+
+class DanfossTemperature02Sensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Supply Temperature"
+    _attr_native_unit_of_measurement = "°C"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_temp_02"
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["temp_02"]
+
+
+class DanfossTemperature03Sensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Extract Temperature"
+    _attr_native_unit_of_measurement = "°C"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_temp_03"
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["temp_03"]
+
+
+class DanfossTemperature04Sensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Exhaust Temperature"
+    _attr_native_unit_of_measurement = "°C"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_temp_04"
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["temp_04"]
