@@ -1,0 +1,12 @@
+{
+  "domain": "danfoss_air_ccm",
+  "name": "Danfoss Air CCM",
+  "version": "0.1.0",
+  "config_flow": true,
+  "documentation": "https://github.com/",
+  "iot_class": "local_polling",
+  "requirements": [],
+  "codeowners": [
+    "@Mariusz"
+  ]
+}
