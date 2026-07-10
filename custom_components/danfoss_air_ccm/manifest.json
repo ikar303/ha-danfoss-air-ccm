@@ -3,10 +3,14 @@
   "name": "Danfoss Air CCM",
   "version": "0.1.0",
   "config_flow": true,
-  "documentation": "https://github.com/",
+  "documentation": "https://github.com/ikar303/ha-danfoss-air-ccm",
+  "issue_tracker": "https://github.com/ikar303/ha-danfoss-air-ccm/issues",
+  "codeowners": [
+    "@ikar303"
+  ],
   "iot_class": "local_polling",
   "requirements": [],
-  "codeowners": [
-    "@Mariusz"
+  "loggers": [
+    "custom_components.danfoss_air_ccm"
   ]
 }
