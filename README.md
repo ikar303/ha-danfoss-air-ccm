@@ -71,7 +71,18 @@ Restart Home Assistant.
 - Alarms
 - Bypass
 - Boost mode
+Features
 
+✅ Config Flow
+✅ Fan Step control (1-10)
+✅ Fan Step sensor
+✅ Outdoor temperature
+✅ Supply temperature
+✅ Extract temperature
+✅ Exhaust temperature
+✅ Relative humidity
+✅ Actual Supply Fan Step
+✅ Actual Exhaust Fan Step
 ---
 
 ## Development
