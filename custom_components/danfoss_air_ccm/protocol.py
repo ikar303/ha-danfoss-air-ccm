@@ -165,3 +165,4 @@ class DanfossClient:
 
     def get_exhaust_fan_speed(self):
         return self.get_parameter_word(PARAM_EXHAUST_FAN_SPEED)
+    

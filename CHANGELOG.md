@@ -11,13 +11,15 @@
 - Fan Step write
 - Fan Step sensor
 - Fan Step number entity
-## 0.2.0
+## v0.2.0
 
-Added:
-- Outdoor temperature
-- Supply temperature
-- Extract temperature
-- Exhaust temperature
-- Relative humidity
-- Actual supply fan step
-- Actual exhaust fan step
+### Added
+- Fan Step control
+- Fan Step sensor
+- Supply Step
+- Extract Step
+- Outdoor Temperature
+- Supply Temperature
+- Extract Temperature
+- Exhaust Temperature
+- Relative Humidity

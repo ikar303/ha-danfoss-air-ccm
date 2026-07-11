@@ -51,9 +51,9 @@ class DanfossCoordinator(DataUpdateCoordinator):
             "temp_04": self.client.get_temp_04(),
 
             "humidity": self.client.get_humidity(),
-
-            "supply_fan_speed": self.client.get_supply_fan_speed(),
-            "exhaust_fan_speed": self.client.get_exhaust_fan_speed(),
+          
+            "basic_supply_step": self.client.get_basic_supply(),
+            "basic_extract_step": self.client.get_basic_extract(),
         }
 
     async def set_fan_step(self, value):
