@@ -16,6 +16,9 @@ from .const import (
     PARAM_TEMP_02,
     PARAM_TEMP_03,
     PARAM_TEMP_04,
+    PARAM_HUMIDITY,
+    PARAM_SUPPLY_FAN_SPEED,
+    PARAM_EXHAUST_FAN_SPEED,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -138,6 +141,12 @@ class DanfossClient:
             value -= 65536
 
         return value / 100.0
+    
+    def get_parameter_word(self, parameter):
+
+        data = self.read_parameter(parameter)
+
+        return (data[0] << 8) | data[1]
         
     def get_basic_supply(self):
         return self.get_parameter_byte(PARAM_BASIC_SUPPLY)
@@ -147,3 +156,12 @@ class DanfossClient:
 
     def get_run_mode(self):
         return self.get_parameter_byte(PARAM_RUN_MODE)
+    
+    def get_humidity(self):
+        return self.get_parameter_byte(PARAM_HUMIDITY) - 90
+    
+    def get_supply_fan_speed(self):
+        return self.get_parameter_word(PARAM_SUPPLY_FAN_SPEED)
+
+    def get_exhaust_fan_speed(self):
+        return self.get_parameter_word(PARAM_EXHAUST_FAN_SPEED)

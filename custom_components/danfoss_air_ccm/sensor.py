@@ -17,6 +17,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
             DanfossTemperature02Sensor(coordinator),
             DanfossTemperature03Sensor(coordinator),
             DanfossTemperature04Sensor(coordinator),
+            DanfossHumiditySensor(coordinator),
+            DanfossSupplyFanSpeedSensor(coordinator),
+            DanfossExhaustFanSpeedSensor(coordinator),
         ]
     )
 
@@ -88,3 +91,43 @@ class DanfossTemperature04Sensor(DanfossEntity, SensorEntity):
     @property
     def native_value(self):
         return self.coordinator.data["temp_04"]
+    
+class DanfossHumiditySensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Relative Humidity"
+    _attr_native_unit_of_measurement = "%"
+    _attr_unique_id = "danfoss_humidity"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["humidity"]
+    
+class DanfossSupplyFanSpeedSensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Supply Fan Speed"
+    _attr_native_unit_of_measurement = "%"
+    _attr_unique_id = "danfoss_supply_fan_speed"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["supply_fan_speed"]
+
+
+class DanfossExhaustFanSpeedSensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Exhaust Fan Speed"
+    _attr_native_unit_of_measurement = "%"
+    _attr_unique_id = "danfoss_exhaust_fan_speed"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["exhaust_fan_speed"]
