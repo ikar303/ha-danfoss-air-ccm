@@ -166,3 +166,11 @@ class DanfossClient:
     def get_exhaust_fan_speed(self):
         return self.get_parameter_word(PARAM_EXHAUST_FAN_SPEED)
     
+    def set_basic_supply(self, value: int):
+        self.write_parameter(PARAM_BASIC_SUPPLY, value)
+        return self.get_basic_supply()
+
+
+    def set_basic_extract(self, value: int):
+        self.write_parameter(PARAM_BASIC_EXTRACT, value)
+        return self.get_basic_extract()

@@ -64,3 +64,22 @@ class DanfossCoordinator(DataUpdateCoordinator):
         )
 
         await self.async_request_refresh()
+
+    async def set_basic_supply(self, value):
+
+        await self.hass.async_add_executor_job(
+            self.client.set_basic_supply,
+            value,
+    )
+
+        await self.async_request_refresh()
+
+
+    async def set_basic_extract(self, value):
+
+        await self.hass.async_add_executor_job(
+            self.client.set_basic_extract,
+            value,
+    )
+
+        await self.async_request_refresh()
