@@ -8,7 +8,7 @@ Native Home Assistant integration for **Danfoss Air CCM** ventilation units usin
 
 # Status
 
-**Current version:** `0.3.0-beta`
+**Current version:** `0.3.0`
 
 | Component | Status |
 |-----------|--------|
