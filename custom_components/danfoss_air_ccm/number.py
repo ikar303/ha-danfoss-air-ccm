@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from homeassistant.components.number import NumberEntity
 
+from homeassistant.helpers.entity import EntityCategory
+
 from .const import DOMAIN
 from .entity import DanfossEntity
 
@@ -43,14 +45,17 @@ class DanfossFanStepNumber(DanfossEntity, NumberEntity):
 
 class DanfossSupplyStepNumber(DanfossEntity, NumberEntity):
 
-    _attr_name = "Supply Step"
+    _attr_name = "Basic Supply Step"
+    _attr_icon = "mdi:fan-chevron-down"
     _attr_native_min_value = 0
     _attr_native_max_value = 100
     _attr_native_step = 1
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
         self._attr_unique_id = "danfoss_supply_step_number"
+
 
     @property
     def native_value(self):
@@ -61,11 +66,13 @@ class DanfossSupplyStepNumber(DanfossEntity, NumberEntity):
 
 class DanfossExtractStepNumber(DanfossEntity, NumberEntity):
 
-    _attr_name = "Extract Step"
+    _attr_name = "Basic Extract Step"
+    _attr_icon = "mdi:fan-chevron-up"
     _attr_native_min_value = 0
     _attr_native_max_value = 100
     _attr_native_step = 1
-
+    _attr_entity_category = EntityCategory.CONFIG
+    
     def __init__(self, coordinator):
         super().__init__(coordinator)
         self._attr_unique_id = "danfoss_extract_step_number"

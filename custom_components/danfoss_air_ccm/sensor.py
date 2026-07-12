@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import (
+    SensorEntity,
+    SensorDeviceClass,
+    SensorStateClass,
+)
+from homeassistant.const import UnitOfTemperature
 
 from .const import DOMAIN
 from .entity import DanfossEntity
@@ -18,8 +23,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
             DanfossTemperature03Sensor(coordinator),
             DanfossTemperature04Sensor(coordinator),
             DanfossHumiditySensor(coordinator),
-            DanfossBasicSupplyStepSensor(coordinator),
-            DanfossBasicExtractStepSensor(coordinator),
+            DanfossCurrentSupplyStepSensor(coordinator),
+            DanfossCurrentExtractStepSensor(coordinator),
         ]
     )
 
@@ -27,7 +32,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class DanfossFanStepSensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Fan Step"
-
+    _attr_icon = "mdi:fan"
+    
     def __init__(self, coordinator):
         super().__init__(coordinator)
         self._attr_unique_id = "danfoss_fan_step"
@@ -40,7 +46,9 @@ class DanfossFanStepSensor(DanfossEntity, SensorEntity):
 class DanfossTemperature01Sensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Outdoor Temperature"
-    _attr_native_unit_of_measurement = "°C"
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -54,7 +62,9 @@ class DanfossTemperature01Sensor(DanfossEntity, SensorEntity):
 class DanfossTemperature02Sensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Supply Temperature"
-    _attr_native_unit_of_measurement = "°C"
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -68,7 +78,9 @@ class DanfossTemperature02Sensor(DanfossEntity, SensorEntity):
 class DanfossTemperature03Sensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Extract Temperature"
-    _attr_native_unit_of_measurement = "°C"
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -82,7 +94,9 @@ class DanfossTemperature03Sensor(DanfossEntity, SensorEntity):
 class DanfossTemperature04Sensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Exhaust Temperature"
-    _attr_native_unit_of_measurement = "°C"
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -96,7 +110,10 @@ class DanfossHumiditySensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Relative Humidity"
     _attr_native_unit_of_measurement = "%"
+    _attr_device_class = SensorDeviceClass.HUMIDITY
+    _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_unique_id = "danfoss_humidity"
+    _attr_suggested_display_precision = 1
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -106,9 +123,10 @@ class DanfossHumiditySensor(DanfossEntity, SensorEntity):
         return self.coordinator.data["humidity"]
     
    
-class DanfossBasicSupplyStepSensor(DanfossEntity, SensorEntity):
+class DanfossCurrentSupplyStepSensor(DanfossEntity, SensorEntity):
 
-    _attr_name = "Supply Step"
+    _attr_name = "Current Supply Step"
+    _attr_icon = "mdi:account"
 
     def __init__(self, coordinator):        
         super().__init__(coordinator)
@@ -119,9 +137,10 @@ class DanfossBasicSupplyStepSensor(DanfossEntity, SensorEntity):
         return self.coordinator.data["basic_supply_step"]
 
 
-class DanfossBasicExtractStepSensor(DanfossEntity, SensorEntity):
+class DanfossCurrentExtractStepSensor(DanfossEntity, SensorEntity):
 
-    _attr_name = "Extract Step"
+    _attr_name = "Current Extract Step"
+    _attr_icon = "mdi:fan-chevron-up"
 
     def __init__(self, coordinator):
         super().__init__(coordinator)

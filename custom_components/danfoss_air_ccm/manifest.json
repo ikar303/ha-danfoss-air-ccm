@@ -1,7 +1,7 @@
 {
   "domain": "danfoss_air_ccm",
   "name": "Danfoss Air CCM",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "config_flow": true,
   "documentation": "https://github.com/ikar303/ha-danfoss-air-ccm",
   "issue_tracker": "https://github.com/ikar303/ha-danfoss-air-ccm/issues",

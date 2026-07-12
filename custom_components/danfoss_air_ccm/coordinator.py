@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from .storage import DanfossStorage
+
 from datetime import timedelta
 import logging
 
@@ -22,11 +24,13 @@ class DanfossCoordinator(DataUpdateCoordinator):
 
         self.client = DanfossClient(host)
 
+        self.storage = DanfossStorage(hass)
+
         super().__init__(
             hass,
             _LOGGER,
             name="Danfoss Air CCM",
-            update_interval=timedelta(seconds=5),
+            update_interval=timedelta(seconds=30),
         )
 
     async def _async_update_data(self):
@@ -54,6 +58,8 @@ class DanfossCoordinator(DataUpdateCoordinator):
           
             "basic_supply_step": self.client.get_basic_supply(),
             "basic_extract_step": self.client.get_basic_extract(),
+
+            "bypass": self.client.get_bypass(),
         }
 
     async def set_fan_step(self, value):
@@ -83,3 +89,52 @@ class DanfossCoordinator(DataUpdateCoordinator):
     )
 
         await self.async_request_refresh()
+
+    async def set_bypass(self, enabled: bool):
+
+        await self.hass.async_add_executor_job(
+            self.client.set_bypass,
+            enabled,
+        )
+
+        await self.async_request_refresh()
+
+    async def async_initialize_storage(self):
+        """Save installer settings on first run."""
+
+        data = await self.storage.load()
+
+        if (
+            data["installer_supply_step"] is None
+            or data["installer_extract_step"] is None
+        ):
+
+            if self.data is None:
+                _LOGGER.warning("No coordinator data available.")
+                return
+
+            data["installer_supply_step"] = self.data["basic_supply_step"]
+            data["installer_extract_step"] = self.data["basic_extract_step"]
+
+            await self.storage.save(data)
+
+            _LOGGER.info(
+                "Installer settings saved: Supply=%s Extract=%s",
+                data["installer_supply_step"],
+                data["installer_extract_step"],
+            )
+
+
+    async def restore_installer_settings(self):
+        """Restore installer airflow settings."""
+
+        data = await self.storage.load()
+
+        await self.set_basic_supply(data["installer_supply_step"])
+        await self.set_basic_extract(data["installer_extract_step"])
+
+
+    async def get_installer_settings(self):
+        """Return stored installer settings."""
+
+        return await self.storage.load()

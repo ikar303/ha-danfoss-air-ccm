@@ -17,8 +17,7 @@ from .const import (
     PARAM_TEMP_03,
     PARAM_TEMP_04,
     PARAM_HUMIDITY,
-    PARAM_SUPPLY_FAN_SPEED,
-    PARAM_EXHAUST_FAN_SPEED,
+    PARAM_BYPASS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -131,6 +130,10 @@ class DanfossClient:
     def get_parameter_byte(self, parameter: int):
         data = self.read_parameter(parameter)
         return data[0]
+    
+    def get_parameter_bool(self, parameter):
+        return self.get_parameter_byte(parameter) != 0
+
     def get_parameter_short(self, parameter):
 
         data = self.read_parameter(parameter)
@@ -158,14 +161,14 @@ class DanfossClient:
         return self.get_parameter_byte(PARAM_RUN_MODE)
     
     def get_humidity(self):
-        return self.get_parameter_byte(PARAM_HUMIDITY) - 90
-    
-    def get_supply_fan_speed(self):
-        return self.get_parameter_word(PARAM_SUPPLY_FAN_SPEED)
+        value = self.get_parameter_byte(PARAM_HUMIDITY)
 
-    def get_exhaust_fan_speed(self):
-        return self.get_parameter_word(PARAM_EXHAUST_FAN_SPEED)
+        if value <= 0:
+            return None
+
+        return round(value * 100.0 / 255.0, 1)
     
+   
     def set_basic_supply(self, value: int):
         self.write_parameter(PARAM_BASIC_SUPPLY, value)
         return self.get_basic_supply()
@@ -174,3 +177,12 @@ class DanfossClient:
     def set_basic_extract(self, value: int):
         self.write_parameter(PARAM_BASIC_EXTRACT, value)
         return self.get_basic_extract()
+    
+
+    def get_bypass(self):
+        return self.get_parameter_bool(PARAM_BYPASS)
+
+
+    def set_bypass(self, enabled: bool):
+        self.write_parameter(PARAM_BYPASS, 1 if enabled else 0)
+        return self.get_bypass()
