@@ -12,6 +12,12 @@ from .const import (
     PARAM_BASIC_SUPPLY,
     PARAM_BASIC_EXTRACT,
     PARAM_RUN_MODE,
+    PARAM_TEMP_01,
+    PARAM_TEMP_02,
+    PARAM_TEMP_03,
+    PARAM_TEMP_04,
+    PARAM_HUMIDITY,
+    PARAM_BYPASS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -98,6 +104,17 @@ class DanfossClient:
 
 
         return self._exchange(frame)
+    def get_temp_01(self):
+        return self.get_parameter_short(PARAM_TEMP_01)
+
+    def get_temp_02(self):
+        return self.get_parameter_short(PARAM_TEMP_02)
+
+    def get_temp_03(self):
+        return self.get_parameter_short(PARAM_TEMP_03)
+
+    def get_temp_04(self):
+        return self.get_parameter_short(PARAM_TEMP_04)
 
     #
     # Danfoss API
@@ -113,6 +130,26 @@ class DanfossClient:
     def get_parameter_byte(self, parameter: int):
         data = self.read_parameter(parameter)
         return data[0]
+    
+    def get_parameter_bool(self, parameter):
+        return self.get_parameter_byte(parameter) != 0
+
+    def get_parameter_short(self, parameter):
+
+        data = self.read_parameter(parameter)
+
+        value = (data[0] << 8) | data[1]
+
+        if value >= 32768:
+            value -= 65536
+
+        return value / 100.0
+    
+    def get_parameter_word(self, parameter):
+
+        data = self.read_parameter(parameter)
+
+        return (data[0] << 8) | data[1]
         
     def get_basic_supply(self):
         return self.get_parameter_byte(PARAM_BASIC_SUPPLY)
@@ -122,3 +159,30 @@ class DanfossClient:
 
     def get_run_mode(self):
         return self.get_parameter_byte(PARAM_RUN_MODE)
+    
+    def get_humidity(self):
+        value = self.get_parameter_byte(PARAM_HUMIDITY)
+
+        if value <= 0:
+            return None
+
+        return round(value * 100.0 / 255.0, 1)
+    
+   
+    def set_basic_supply(self, value: int):
+        self.write_parameter(PARAM_BASIC_SUPPLY, value)
+        return self.get_basic_supply()
+
+
+    def set_basic_extract(self, value: int):
+        self.write_parameter(PARAM_BASIC_EXTRACT, value)
+        return self.get_basic_extract()
+    
+
+    def get_bypass(self):
+        return self.get_parameter_bool(PARAM_BYPASS)
+
+
+    def set_bypass(self, enabled: bool):
+        self.write_parameter(PARAM_BYPASS, 1 if enabled else 0)
+        return self.get_bypass()
