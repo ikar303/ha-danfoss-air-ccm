@@ -4,6 +4,10 @@ Native Home Assistant integration for **Danfoss Air CCM** ventilation units usin
 
 > ⚠️ This project is currently under active development.
 
+<p align="center">
+  <img src="screenshots/logo.png" width="220">
+</p>
+
 ---
 
 # Status
