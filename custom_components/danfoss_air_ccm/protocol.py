@@ -18,6 +18,10 @@ from .const import (
     PARAM_TEMP_04,
     PARAM_HUMIDITY,
     PARAM_BYPASS,
+    PARAM_BOOST,
+    PARAM_BOOST_TIMER,
+    PARAM_BOOST_AUTO,
+    PARAM_BOOST_MAX_STEP,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -186,3 +190,35 @@ class DanfossClient:
     def set_bypass(self, enabled: bool):
         self.write_parameter(PARAM_BYPASS, 1 if enabled else 0)
         return self.get_bypass()
+    
+    #
+    # Boost
+    #
+
+    def get_boost(self):
+        return self.get_parameter_bool(PARAM_BOOST)
+
+    def set_boost(self, enabled: bool):
+        self.write_parameter(PARAM_BOOST, 1 if enabled else 0)
+        return self.get_boost()
+
+    def get_boost_timer(self):
+        return self.get_parameter_byte(PARAM_BOOST_TIMER)
+
+    def set_boost_timer(self, value: int):
+        self.write_parameter(PARAM_BOOST_TIMER, value)
+        return self.get_boost_timer()
+
+    def get_boost_max_step(self):
+        return self.get_parameter_byte(PARAM_BOOST_MAX_STEP) // 10
+
+    def set_boost_max_step(self, value: int):
+        self.write_parameter(PARAM_BOOST_MAX_STEP, value * 10)
+        return self.get_boost_max_step()
+
+    def get_boost_auto(self):
+        return not self.get_parameter_bool(PARAM_BOOST_AUTO)
+
+    def set_boost_auto(self, enabled: bool):
+        self.write_parameter(PARAM_BOOST_AUTO, 0 if enabled else 1)
+        return self.get_boost_auto()

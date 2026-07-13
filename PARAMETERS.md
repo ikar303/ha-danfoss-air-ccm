@@ -1,8 +1,17 @@
 # Danfoss Air CCM Parameters
 
-This document contains all known parameters discovered during reverse engineering of the Danfoss Air CCM native TCP protocol.
+This document contains all known parameters discovered during reverse engineering of the native Danfoss Air CCM TCP protocol.
 
 > Native TCP protocol (Port **30046**)
+
+---
+
+# Supported Devices
+
+Verified on:
+
+- Danfoss Air CCM
+- Danfoss W1A2
 
 ---
 
@@ -10,10 +19,10 @@ This document contains all known parameters discovered during reverse engineerin
 
 | Item | Count |
 |------|------:|
-| Parameters discovered | 18 |
+| Parameters discovered | 20 |
 | Parameters implemented | 11 |
 | Sensors | 8 |
-| Controls | 4 |
+| Controls | 2 |
 | Configuration entities | 3 |
 | Diagnostic entities | 0 |
 
@@ -47,10 +56,10 @@ This document contains all known parameters discovered during reverse engineerin
 | 769 | Bypass Room Temperature | — | SHORT | ✅ | ✅ | 🚧 | Room temperature threshold |
 | 5160 | Supply Step | Sensor | BYTE | ✅ | ❌ | ✅ | Current supply fan step (0–100) |
 | 5161 | Extract Step | Sensor | BYTE | ✅ | ❌ | ✅ | Current extract fan step (0–100) |
-| 5184 | Basic Supply Step | Number | BYTE | ✅ | ✅ | ✅ | Installer airflow setting |
-| 5185 | Basic Extract Step | Number | BYTE | ✅ | ✅ | ✅ | Installer airflow setting |
-| 5216 | Bypass | Switch | BOOL | ✅ | ✅ | ✅ | Enable / Disable bypass |
-| 5218 | Bypass Timer | — | BYTE | ✅ | ✅ | 🚧 | Minutes |
+| 5184 | Basic Supply Step | Number | BYTE | ✅ | ✅ | ✅ | Installer airflow percentage |
+| 5185 | Basic Extract Step | Number | BYTE | ✅ | ✅ | ✅ | Installer airflow percentage |
+| 5216 | Bypass | Switch | BOOL | ✅ | ✅ | ✅ | Manual bypass control |
+| 5218 | Bypass Timer | — | BYTE | ✅ | ✅ | 🚧 | Bypass duration |
 | 5219 | Bypass Outdoor Temperature | — | SHORT | ✅ | ✅ | 🚧 | Outdoor temperature threshold |
 | 5232 | Relative Humidity | Sensor | PERCENT | ✅ | ❌ | ✅ | Converted using `value × 100 / 255` |
 | 5234 | Outdoor Temperature | Sensor | SHORT | ✅ | ❌ | ✅ | Outdoor air temperature |
@@ -67,11 +76,13 @@ This document contains all known parameters discovered during reverse engineerin
 | Address | Name | Type | Read | Write | Status | Notes |
 |--------:|------|------|:----:|:-----:|:------:|-------|
 | 1008 | Alarm Code | WORD | ✅ | ❌ | 🚧 | Alarm identifier |
-| 5223 | Bypass Active | BOOL | ✅ | ❌ | 🚧 | Current bypass state |
+| 5223 | Bypass Active | BOOL | ✅ | ❌ | 🚧 | Current bypass status |
 | 5226 | Filter Fouling | PERCENT | ✅ | ❌ | 🚧 | Filter wear level |
 | 5231 | Filter Reset | BOOL | ❌ | ✅ | 🚧 | Reset filter counter |
-| 5424 | Boost | BOOL | ✅ | ✅ | 🚧 | Boost mode |
-| 5891 | Maximum Boost Step | BYTE | ✅ | ✅ | 🚧 | Maximum boost level |
+| 5424 | Boost | BOOL | ✅ | ✅ | 🚧 | Manual Boost mode |
+| 5425 | Boost Timer | BYTE | ✅ | ✅ | 🚧 | Boost duration |
+| 5890 | Boost Auto | BOOL | ✅ | ✅ | 🚧 | Automatic Boost enable |
+| 5891 | Maximum Boost Step | BYTE | ✅ | ✅ | 🚧 | Maximum Boost ventilation step |
 | 6016 | Fan Step Setpoint | BYTE | ✅ | ✅ | 🚧 | Requested fan step |
 | 6019 | Resultant Fan Step | BYTE | ✅ | ❌ | 🚧 | Effective fan step |
 
@@ -82,7 +93,7 @@ This document contains all known parameters discovered during reverse engineerin
 | Address | Name | Reason |
 |--------:|------|--------|
 | 5200 | Actual Supply Fan Speed | Always returns 0 |
-| 5201 | Actual Exhaust Fan Speed | Always returns 0 |
+| 5201 | Actual Extract Fan Speed | Always returns 0 |
 
 ---
 
@@ -99,15 +110,18 @@ This document contains all known parameters discovered during reverse engineerin
 - ✅ Exhaust Temperature
 - ✅ Relative Humidity
 
-## Controls
+## Numbers
 
 - ✅ Fan Step
-- ✅ Bypass
-
-## Configuration
-
 - ✅ Basic Supply Step
 - ✅ Basic Extract Step
+
+## Switches
+
+- ✅ Bypass
+
+## Buttons
+
 - ✅ Restore Installer Settings
 
 ## Diagnostics
@@ -130,5 +144,8 @@ This document contains all known parameters discovered during reverse engineerin
 | 2026-07 | Basic Supply / Extract Step implemented |
 | 2026-07 | Native Bypass switch implemented |
 | 2026-07 | Installer Mode implemented |
-| 2026-07 | Persistent installer settings added |
+| 2026-07 | Persistent installer settings storage implemented |
 | 2026-07 | Restore Installer Settings button implemented |
+| 2026-07 | Home Assistant Device Classes added |
+| 2026-07 | Home Assistant State Classes added |
+| 2026-07 | Native Material Design Icons added |

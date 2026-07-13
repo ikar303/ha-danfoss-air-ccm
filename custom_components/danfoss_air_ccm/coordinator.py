@@ -60,6 +60,13 @@ class DanfossCoordinator(DataUpdateCoordinator):
             "basic_extract_step": self.client.get_basic_extract(),
 
             "bypass": self.client.get_bypass(),
+            "basic_extract_step": self.client.get_basic_extract(),
+
+
+            "boost": self.client.get_boost(),
+            "boost_timer": self.client.get_boost_timer(),
+            "boost_max_step": self.client.get_boost_max_step(),
+            "boost_auto": self.client.get_boost_auto(),
         }
 
     async def set_fan_step(self, value):
@@ -94,6 +101,45 @@ class DanfossCoordinator(DataUpdateCoordinator):
 
         await self.hass.async_add_executor_job(
             self.client.set_bypass,
+            enabled,
+        )
+
+        await self.async_request_refresh()
+
+    async def set_boost(self, enabled: bool):
+
+        await self.hass.async_add_executor_job(
+            self.client.set_boost,
+            enabled,
+        )
+
+        await self.async_request_refresh()
+
+
+    async def set_boost_timer(self, value):
+
+        await self.hass.async_add_executor_job(
+            self.client.set_boost_timer,
+            value,
+        )
+
+        await self.async_request_refresh()
+
+
+    async def set_boost_max_step(self, value):
+
+        await self.hass.async_add_executor_job(
+            self.client.set_boost_max_step,
+            value,
+        )
+
+        await self.async_request_refresh()
+
+
+    async def set_boost_auto(self, enabled: bool):
+
+        await self.hass.async_add_executor_job(
+            self.client.set_boost_auto,
             enabled,
         )
 
