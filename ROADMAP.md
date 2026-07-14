@@ -20,7 +20,7 @@ This document describes the planned development of the Danfoss Air CCM Home Assi
 - [x] Extract Temperature
 - [x] Exhaust Temperature
 - [x] Relative Humidity
-- [x] Bypass switch
+- [x] Native Bypass switch
 - [x] Installer Mode
 - [x] Persistent installer settings
 - [x] Restore Installer Settings
@@ -29,17 +29,21 @@ This document describes the planned development of the Danfoss Air CCM Home Assi
 
 # Version 0.4.0
 
-## Diagnostics
-
-- [ ] Alarm Code
-- [ ] Filter Fouling
-- [ ] Filter Reset
-
 ## Ventilation
 
-- [ ] Bypass Active
-- [ ] Run Mode
+- [x] Boost
+- [x] Boost Timer
+- [x] Maximum Boost Step
+- [x] Auto Boost
+- [x] Bypass Active
 - [ ] Resultant Fan Step
+- [x] Run Mode
+
+## Diagnostics
+
+- [x] Alarm Code
+- [ ] Filter Fouling
+- [ ] Filter Reset
 
 ---
 
@@ -47,12 +51,17 @@ This document describes the planned development of the Danfoss Air CCM Home Assi
 
 ## Advanced Ventilation
 
-- [ ] Boost
-- [ ] Maximum Boost Step
 - [ ] Bypass Timer
 - [ ] Bypass Outdoor Temperature
 - [ ] Bypass Room Temperature
 - [ ] Auto Bypass
+- [ ] Night Cooling
+
+## Monitoring
+
+- [ ] Filter Lifetime
+- [ ] Current Operating State
+- [ ] User Mode
 
 ---
 
@@ -65,46 +74,52 @@ This document describes the planned development of the Danfoss Air CCM Home Assi
 - [ ] Weekly Profiles
 - [ ] Time Programs
 
-## Automation
+## Home Assistant
 
-- [ ] Home Assistant services
+- [ ] Services
 - [ ] Presets
-- [ ] Scene support
+- [ ] Scene Support
+- [ ] Select entities
 
 ---
 
 # Version 0.7.0
 
-## Operating Modes
+## Climate
 
-- [ ] User Mode
-- [ ] Operating State
-- [ ] Night Cooling
 - [ ] Humidity Target
 - [ ] Dew Point
+- [ ] Heat Recovery Efficiency
+- [ ] Energy Consumption
+- [ ] Statistics
+
+## Diagnostics
+
+- [ ] Advanced Diagnostics
+- [ ] Automatic Firmware Detection
 
 ---
 
 # Version 1.0.0
 
-## Complete Integration
+## Stable Release
 
 - [ ] Full protocol support
 - [ ] HACS release
-- [ ] Complete documentation
-- [ ] Diagnostics
 - [ ] Automatic device discovery
+- [ ] Complete documentation
 - [ ] Translation support
-- [ ] Stable release
+- [ ] Stable API
+- [ ] Production ready
 
 ---
 
-# Long-term Ideas
+# Future Ideas
 
-- [ ] Energy dashboard
-- [ ] Heat recovery efficiency
-- [ ] Filter lifetime estimation
-- [ ] Energy consumption
-- [ ] Statistics
-- [ ] Automatic firmware detection
-- [ ] Advanced diagnostics
+- [ ] Developer Mode
+- [ ] Raw Parameter Explorer
+- [ ] Parameter Read/Write Console
+- [ ] Protocol Analyzer
+- [ ] Automatic parameter discovery
+- [ ] Firmware comparison tool
+- [ ] Multi-device support

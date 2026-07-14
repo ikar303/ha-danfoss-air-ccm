@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import socket
 import logging
+from time import time
 
 from .const import (
     PORT,
@@ -18,6 +19,15 @@ from .const import (
     PARAM_TEMP_04,
     PARAM_HUMIDITY,
     PARAM_BYPASS,
+    PARAM_BOOST,
+    PARAM_BOOST_TIMER,
+    PARAM_BOOST_AUTO,
+    PARAM_BOOST_MAX_STEP,
+    PARAM_PROGRAM_NUMBER,
+    PARAM_BYPASS_ACTIVE,
+    PARAM_ALARM_CODE,
+    PARAM_CURRENT_SUPPLY_STEP,
+    PARAM_CURRENT_EXTRACT_STEP,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -150,6 +160,17 @@ class DanfossClient:
         data = self.read_parameter(parameter)
 
         return (data[0] << 8) | data[1]
+    
+    #
+    # Current airflow
+    #
+
+    def get_current_supply_step(self):
+        return self.get_parameter_byte(PARAM_CURRENT_SUPPLY_STEP)
+
+
+    def get_current_extract_step(self):
+        return self.get_parameter_byte(PARAM_CURRENT_EXTRACT_STEP)
         
     def get_basic_supply(self):
         return self.get_parameter_byte(PARAM_BASIC_SUPPLY)
@@ -157,8 +178,29 @@ class DanfossClient:
     def get_basic_extract(self):
         return self.get_parameter_byte(PARAM_BASIC_EXTRACT)
 
+    #
+    # Run Mode
+    #
+
     def get_run_mode(self):
         return self.get_parameter_byte(PARAM_RUN_MODE)
+
+
+    def set_run_mode_demand(self):
+        self.write_parameter(PARAM_RUN_MODE, 0)
+        return self.get_run_mode()
+
+
+    def set_run_mode_program(self, program: int = 1):
+        self.write_parameter(PARAM_PROGRAM_NUMBER, program)
+        self.write_parameter(PARAM_RUN_MODE, 1)
+        return self.get_run_mode()
+
+
+    def set_run_mode_manual(self, fan_step: int):
+        self.write_parameter(PARAM_FAN_STEP, fan_step)
+        self.write_parameter(PARAM_RUN_MODE, 2)
+        return self.get_run_mode()
     
     def get_humidity(self):
         value = self.get_parameter_byte(PARAM_HUMIDITY)
@@ -186,3 +228,79 @@ class DanfossClient:
     def set_bypass(self, enabled: bool):
         self.write_parameter(PARAM_BYPASS, 1 if enabled else 0)
         return self.get_bypass()
+    
+    #
+    # Boost
+    #
+
+    def get_boost(self):
+        return self.get_parameter_bool(PARAM_BOOST)
+
+    def write_boost_settings(self):
+        """Write all Boost configuration parameters."""
+
+        self.write_parameter(
+            PARAM_BOOST_MAX_STEP,
+            self.get_boost_max_step() * 10,
+        )
+
+        self.write_parameter(
+            PARAM_BOOST_TIMER,
+            self.get_boost_timer(),
+        )
+
+        # Danfoss uses inverted logic:
+        # 0 = Auto ON
+        # 1 = Auto OFF
+        self.write_parameter(
+            PARAM_BOOST_AUTO,
+            0 if self.get_boost_auto() else 1,
+        )
+
+    def set_boost(self, enabled: bool):
+        """Enable or disable Boost."""
+
+        if enabled:
+            self.write_boost_settings()
+
+        self.write_parameter(
+            PARAM_BOOST,
+            1 if enabled else 0,
+        )   
+
+        import time
+        time.sleep(0.1)
+
+        return self.get_boost()
+
+    def get_boost_timer(self):
+        return self.get_parameter_byte(PARAM_BOOST_TIMER)
+
+    def set_boost_timer(self, value: int):
+        self.write_parameter(PARAM_BOOST_TIMER, value)
+        return self.get_boost_timer()
+
+    def get_boost_max_step(self):
+        return self.get_parameter_byte(PARAM_BOOST_MAX_STEP) // 10
+
+    def set_boost_max_step(self, value: int):
+        self.write_parameter(PARAM_BOOST_MAX_STEP, value * 10)
+        return self.get_boost_max_step()
+
+    def get_boost_auto(self):
+        return not self.get_parameter_bool(PARAM_BOOST_AUTO)
+
+    def set_boost_auto(self, enabled: bool):
+        self.write_parameter(PARAM_BOOST_AUTO, 0 if enabled else 1)
+        return self.get_boost_auto()
+    
+    #
+    # Diagnostics
+    #
+
+    def get_bypass_active(self):
+        return self.get_parameter_bool(PARAM_BYPASS_ACTIVE)
+
+
+    def get_alarm_code(self):
+        return self.get_parameter_word(PARAM_ALARM_CODE)

@@ -9,6 +9,7 @@ from homeassistant.const import UnitOfTemperature
 
 from .const import DOMAIN
 from .entity import DanfossEntity
+from .alarms import get_alarm_text
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -25,6 +26,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
             DanfossHumiditySensor(coordinator),
             DanfossCurrentSupplyStepSensor(coordinator),
             DanfossCurrentExtractStepSensor(coordinator),
+            DanfossBypassActiveSensor(coordinator),
+            DanfossAlarmCodeSensor(coordinator),
+            DanfossAlarmDescriptionSensor(coordinator),
         ]
     )
 
@@ -126,7 +130,7 @@ class DanfossHumiditySensor(DanfossEntity, SensorEntity):
 class DanfossCurrentSupplyStepSensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Current Supply Step"
-    _attr_icon = "mdi:account"
+    _attr_icon = "mdi:fan-chevron-down"
 
     def __init__(self, coordinator):        
         super().__init__(coordinator)
@@ -134,7 +138,7 @@ class DanfossCurrentSupplyStepSensor(DanfossEntity, SensorEntity):
 
     @property
     def native_value(self):
-        return self.coordinator.data["basic_supply_step"]
+        return self.coordinator.data["current_supply_step"]
 
 
 class DanfossCurrentExtractStepSensor(DanfossEntity, SensorEntity):
@@ -148,4 +152,52 @@ class DanfossCurrentExtractStepSensor(DanfossEntity, SensorEntity):
 
     @property
     def native_value(self):
-        return self.coordinator.data["basic_extract_step"]
+        return self.coordinator.data["current_extract_step"]
+    
+
+class DanfossBypassActiveSensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Bypass Active"
+    _attr_icon = "mdi:valve"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_bypass_active"
+
+    @property
+    def native_value(self):
+        return (
+            "Active"
+            if self.coordinator.data["bypass_active"]
+            else "Inactive"
+        )
+
+
+class DanfossAlarmCodeSensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Alarm Code"
+    _attr_icon = "mdi:alert-circle-outline"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_alarm_code"
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["alarm_code"]
+    
+class DanfossAlarmDescriptionSensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Alarm Description"
+    _attr_icon = "mdi:text-box-outline"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_alarm_description"
+
+    @property
+    def native_value(self):
+
+        return get_alarm_text(
+            self.coordinator.data["alarm_code"]
+        )    
