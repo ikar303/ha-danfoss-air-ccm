@@ -89,7 +89,7 @@ class DanfossBoostTimerNumber(DanfossEntity, NumberEntity):
 
 
 
-    _attr_name = "Boost Duration (hours)"
+    _attr_name = "Boost Duration"
     _attr_icon = "mdi:timer-outline"
     _attr_native_unit_of_measurement = "h"
 
