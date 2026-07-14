@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import socket
 import logging
+from time import time
 
 from .const import (
     PORT,
@@ -198,8 +199,41 @@ class DanfossClient:
     def get_boost(self):
         return self.get_parameter_bool(PARAM_BOOST)
 
+    def write_boost_settings(self):
+        """Write all Boost configuration parameters."""
+
+        self.write_parameter(
+            PARAM_BOOST_MAX_STEP,
+            self.get_boost_max_step() * 10,
+        )
+
+        self.write_parameter(
+            PARAM_BOOST_TIMER,
+            self.get_boost_timer(),
+        )
+
+        # Danfoss uses inverted logic:
+        # 0 = Auto ON
+        # 1 = Auto OFF
+        self.write_parameter(
+            PARAM_BOOST_AUTO,
+            0 if self.get_boost_auto() else 1,
+        )
+
     def set_boost(self, enabled: bool):
-        self.write_parameter(PARAM_BOOST, 1 if enabled else 0)
+        """Enable or disable Boost."""
+
+        if enabled:
+            self.write_boost_settings()
+
+        self.write_parameter(
+            PARAM_BOOST,
+            1 if enabled else 0,
+        )   
+
+        import time
+        time.sleep(0.1)
+
         return self.get_boost()
 
     def get_boost_timer(self):

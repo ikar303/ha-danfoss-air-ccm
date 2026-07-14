@@ -87,11 +87,17 @@ class DanfossExtractStepNumber(DanfossEntity, NumberEntity):
 
 class DanfossBoostTimerNumber(DanfossEntity, NumberEntity):
 
-    _attr_name = "Boost Timer"
 
-    _attr_native_min_value = 0
-    _attr_native_max_value = 255
+
+    _attr_name = "Boost Duration (hours)"
+    _attr_icon = "mdi:timer-outline"
+    _attr_native_unit_of_measurement = "h"
+
+    _attr_native_min_value = 1
+    _attr_native_max_value = 24
     _attr_native_step = 1
+
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -108,10 +114,13 @@ class DanfossBoostTimerNumber(DanfossEntity, NumberEntity):
 class DanfossBoostStepNumber(DanfossEntity, NumberEntity):
 
     _attr_name = "Boost Max Step"
+    _attr_icon = "mdi:fan-plus"
 
     _attr_native_min_value = 1
     _attr_native_max_value = 10
     _attr_native_step = 1
+
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
