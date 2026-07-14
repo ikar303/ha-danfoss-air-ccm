@@ -19,12 +19,12 @@ Verified on:
 
 | Item | Count |
 |------|------:|
-| Parameters discovered | 20 |
-| Parameters implemented | 11 |
-| Sensors | 8 |
-| Controls | 2 |
-| Configuration entities | 3 |
-| Diagnostic entities | 0 |
+| Parameters discovered | 27 |
+| Parameters implemented | 18 |
+| Sensors | 11 |
+| Controls | 5 |
+| Configuration entities | 5 |
+| Diagnostic entities | 3 |
 
 ---
 
@@ -54,20 +54,24 @@ Verified on:
 | Address | Name | Entity | Type | Read | Write | Status | Notes |
 |--------:|------|--------|------|:----:|:-----:|:------:|-------|
 | 769 | Bypass Room Temperature | — | SHORT | ✅ | ✅ | 🚧 | Room temperature threshold |
-| 5160 | Supply Step | Sensor | BYTE | ✅ | ❌ | ✅ | Current supply fan step (0–100) |
-| 5161 | Extract Step | Sensor | BYTE | ✅ | ❌ | ✅ | Current extract fan step (0–100) |
+| 1008 | Alarm Code | Sensor | WORD | ✅ | ❌ | ✅ | Current alarm code |
+| 5138 | Run Mode | Select | BYTE | ✅ | ✅ | ✅ | Demand / Program / Manual |
+| 5160 | Current Supply Step | Sensor | BYTE | ✅ | ❌ | ✅ | Current supply airflow (%) |
+| 5161 | Current Extract Step | Sensor | BYTE | ✅ | ❌ | ✅ | Current extract airflow (%) |
 | 5184 | Basic Supply Step | Number | BYTE | ✅ | ✅ | ✅ | Installer airflow percentage |
 | 5185 | Basic Extract Step | Number | BYTE | ✅ | ✅ | ✅ | Installer airflow percentage |
-| 5216 | Bypass | Switch | BOOL | ✅ | ✅ | ✅ | Manual bypass control |
-| 5218 | Bypass Timer | — | BYTE | ✅ | ✅ | 🚧 | Bypass duration |
-| 5219 | Bypass Outdoor Temperature | — | SHORT | ✅ | ✅ | 🚧 | Outdoor temperature threshold |
-| 5232 | Relative Humidity | Sensor | PERCENT | ✅ | ❌ | ✅ | Converted using `value × 100 / 255` |
-| 5234 | Outdoor Temperature | Sensor | SHORT | ✅ | ❌ | ✅ | Outdoor air temperature |
-| 5235 | Supply Temperature | Sensor | SHORT | ✅ | ❌ | ✅ | Supply air temperature |
-| 5236 | Extract Temperature | Sensor | SHORT | ✅ | ❌ | ✅ | Extract air temperature |
-| 5237 | Exhaust Temperature | Sensor | SHORT | ✅ | ❌ | ✅ | Exhaust air temperature |
-| 5894 | Bypass Auto Enabled | — | BOOL | ✅ | ✅ | 🚧 | Automatic bypass |
-| 6017 | Fan Step | Number + Sensor | BYTE | ✅ | ✅ | ✅ | Main ventilation step (1–10) |
+| 5216 | Bypass | Switch | BOOL | ✅ | ✅ | ✅ | Manual bypass |
+| 5223 | Bypass Active | Sensor | BOOL | ✅ | ❌ | ✅ | Current bypass state |
+| 5232 | Relative Humidity | Sensor | PERCENT | ✅ | ❌ | ✅ | value × 100 / 255 |
+| 5234 | Outdoor Temperature | Sensor | SHORT | ✅ | ❌ | ✅ | Outdoor air |
+| 5235 | Supply Temperature | Sensor | SHORT | ✅ | ❌ | ✅ | Supply air |
+| 5236 | Extract Temperature | Sensor | SHORT | ✅ | ❌ | ✅ | Extract air |
+| 5237 | Exhaust Temperature | Sensor | SHORT | ✅ | ❌ | ✅ | Exhaust air |
+| 5424 | Boost | Switch | BOOL | ✅ | ✅ | ✅ | Manual Boost |
+| 5425 | Boost Duration | Number | BYTE | ✅ | ✅ | ✅ | Boost duration (hours) |
+| 5890 | Boost Auto | Switch | BOOL | ✅ | ✅ | ✅ | Automatic Boost |
+| 5891 | Boost Max Step | Number | BYTE | ✅ | ✅ | ✅ | Maximum Boost step |
+| 6017 | Fan Step | Number + Sensor | BYTE | ✅ | ✅ | ✅ | Main ventilation step |
 
 ---
 
@@ -75,14 +79,11 @@ Verified on:
 
 | Address | Name | Type | Read | Write | Status | Notes |
 |--------:|------|------|:----:|:-----:|:------:|-------|
-| 1008 | Alarm Code | WORD | ✅ | ❌ | 🚧 | Alarm identifier |
-| 5223 | Bypass Active | BOOL | ✅ | ❌ | 🚧 | Current bypass status |
-| 5226 | Filter Fouling | PERCENT | ✅ | ❌ | 🚧 | Filter wear level |
-| 5231 | Filter Reset | BOOL | ❌ | ✅ | 🚧 | Reset filter counter |
-| 5424 | Boost | BOOL | ✅ | ✅ | 🚧 | Manual Boost mode |
-| 5425 | Boost Timer | BYTE | ✅ | ✅ | 🚧 | Boost duration |
-| 5890 | Boost Auto | BOOL | ✅ | ✅ | 🚧 | Automatic Boost enable |
-| 5891 | Maximum Boost Step | BYTE | ✅ | ✅ | 🚧 | Maximum Boost ventilation step |
+| 5218 | Bypass Timer | BYTE | ✅ | ✅ | 🚧 | Bypass duration |
+| 5219 | Bypass Outdoor Temperature | SHORT | ✅ | ✅ | 🚧 | Outdoor threshold |
+| 5226 | Filter Fouling | PERCENT | ✅ | ❌ | 🚧 | Filter wear |
+| 5231 | Filter Reset | BOOL | ❌ | ✅ | 🚧 | Reset counter |
+| 5894 | Bypass Auto Enabled | BOOL | ✅ | ✅ | 🚧 | Automatic bypass |
 | 6016 | Fan Step Setpoint | BYTE | ✅ | ✅ | 🚧 | Requested fan step |
 | 6019 | Resultant Fan Step | BYTE | ✅ | ❌ | 🚧 | Effective fan step |
 
@@ -109,26 +110,50 @@ Verified on:
 - ✅ Extract Temperature
 - ✅ Exhaust Temperature
 - ✅ Relative Humidity
+- ✅ Alarm Code
+- ✅ Alarm Description
+- ✅ Bypass Active
+
+---
 
 ## Numbers
 
 - ✅ Fan Step
 - ✅ Basic Supply Step
 - ✅ Basic Extract Step
+- ✅ Boost Duration
+- ✅ Boost Max Step
+
+---
 
 ## Switches
 
+- ✅ Boost
+- ✅ Boost Auto
 - ✅ Bypass
+
+---
+
+## Select
+
+- ✅ Run Mode
+
+---
 
 ## Buttons
 
 - ✅ Restore Installer Settings
 
+---
+
 ## Diagnostics
 
-- ⏳ Alarm Code
-- ⏳ Filter Fouling
-- ⏳ Filter Reset
+- ✅ Alarm Code
+- ✅ Alarm Description
+- ✅ Bypass Active
+- 🚧 Filter Fouling
+- 🚧 Filter Reset
+- 🚧 Resultant Fan Step
 
 ---
 
@@ -138,14 +163,23 @@ Verified on:
 |------|-------------|
 | 2026-07 | Native TCP protocol reverse engineered |
 | 2026-07 | Fan Step read/write implemented |
-| 2026-07 | Temperature sensors implemented |
-| 2026-07 | Relative Humidity implemented |
 | 2026-07 | Current Supply / Extract Step implemented |
 | 2026-07 | Basic Supply / Extract Step implemented |
+| 2026-07 | Outdoor, Supply, Extract and Exhaust temperature sensors implemented |
+| 2026-07 | Relative Humidity implemented |
 | 2026-07 | Native Bypass switch implemented |
+| 2026-07 | Boost implemented |
+| 2026-07 | Boost Auto implemented |
+| 2026-07 | Boost Duration implemented |
+| 2026-07 | Boost Max Step implemented |
+| 2026-07 | Run Mode implemented |
+| 2026-07 | Alarm Code implemented |
+| 2026-07 | Alarm Description implemented |
+| 2026-07 | Bypass Active implemented |
 | 2026-07 | Installer Mode implemented |
-| 2026-07 | Persistent installer settings storage implemented |
+| 2026-07 | Persistent installer settings implemented |
 | 2026-07 | Restore Installer Settings button implemented |
+| 2026-07 | Native TCP protocol fully replaces Modbus |
 | 2026-07 | Home Assistant Device Classes added |
 | 2026-07 | Home Assistant State Classes added |
-| 2026-07 | Native Material Design Icons added |
+| 2026-07 | Material Design Icons added |

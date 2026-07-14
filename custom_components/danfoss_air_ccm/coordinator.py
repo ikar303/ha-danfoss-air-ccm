@@ -60,13 +60,18 @@ class DanfossCoordinator(DataUpdateCoordinator):
             "basic_extract_step": self.client.get_basic_extract(),
 
             "bypass": self.client.get_bypass(),
-            "basic_extract_step": self.client.get_basic_extract(),
-
-
+            
             "boost": self.client.get_boost(),
             "boost_timer": self.client.get_boost_timer(),
             "boost_max_step": self.client.get_boost_max_step(),
             "boost_auto": self.client.get_boost_auto(),
+            "run_mode": self.client.get_run_mode(),
+
+            "bypass_active": self.client.get_bypass_active(),
+
+            "alarm_code": self.client.get_alarm_code(),
+            "current_supply_step": self.client.get_current_supply_step(),
+            "current_extract_step": self.client.get_current_extract_step(),
         }
 
     async def set_fan_step(self, value):
@@ -145,7 +150,32 @@ class DanfossCoordinator(DataUpdateCoordinator):
 
         await self.async_request_refresh()
 
+    async def set_run_mode(self, mode: str):
+
+        if mode == "Demand":
+
+            await self.hass.async_add_executor_job(
+                self.client.set_run_mode_demand,
+            )
+
+        elif mode == "Program":
+
+            await self.hass.async_add_executor_job(
+                self.client.set_run_mode_program,
+            )
+
+        elif mode == "Manual":
+
+            await self.hass.async_add_executor_job(
+                self.client.set_run_mode_manual,
+                self.data["fan_step"],
+            )
+
+        await self.async_request_refresh()
+
+
     async def async_initialize_storage(self):
+
         """Save installer settings on first run."""
 
         data = await self.storage.load()

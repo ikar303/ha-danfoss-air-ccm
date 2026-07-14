@@ -6,18 +6,37 @@ The format is based on Keep a Changelog.
 
 ---
 
-## [Unreleased]
+## [0.4.0] - 2026-07
 
 ### Added
 
-- Boost support
-- Boost Timer
-- Boost Maximum Step
-- Auto Boost
+- Boost switch
+- Boost Duration control
+- Boost Maximum Step control
+- Auto Boost switch
+- Run Mode selector (Demand / Program / Manual)
+- Alarm Code diagnostic sensor
+- Alarm Description sensor
+- Bypass Active sensor
+- Native alarm database (`alarms.py`)
+- ALARMS.md documentation
+- PROTOCOL.md documentation
 
 ### Changed
 
+- Boost Duration limited to 24 hours
+- Boost configuration is automatically written before enabling Boost
+- Improved protocol documentation
+- Expanded parameter documentation
+- Updated project roadmap and README
+
 ### Fixed
+
+- Correct Boost activation sequence
+- Correct Auto Boost inverted logic (`0 = enabled`, `1 = disabled`)
+- Correct Current Supply Step sensor
+- Correct Current Extract Step sensor
+- Improved Run Mode handling
 
 
 ## [0.3.0] - 2026-07

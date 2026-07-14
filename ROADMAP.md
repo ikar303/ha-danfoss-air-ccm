@@ -31,17 +31,17 @@ This document describes the planned development of the Danfoss Air CCM Home Assi
 
 ## Ventilation
 
-- [ ] Boost
-- [ ] Boost Timer
-- [ ] Maximum Boost Step
-- [ ] Auto Boost
-- [ ] Bypass Active
+- [x] Boost
+- [x] Boost Timer
+- [x] Maximum Boost Step
+- [x] Auto Boost
+- [x] Bypass Active
 - [ ] Resultant Fan Step
-- [ ] Run Mode
+- [x] Run Mode
 
 ## Diagnostics
 
-- [ ] Alarm Code
+- [x] Alarm Code
 - [ ] Filter Fouling
 - [ ] Filter Reset
 
