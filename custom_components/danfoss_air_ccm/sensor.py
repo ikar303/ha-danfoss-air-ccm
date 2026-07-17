@@ -11,6 +11,8 @@ from .const import DOMAIN
 from .entity import DanfossEntity
 from .alarms import get_alarm_text
 
+from homeassistant.helpers.entity import EntityCategory
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
 
@@ -19,16 +21,20 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(
         [
             DanfossFanStepSensor(coordinator),
-            DanfossTemperature01Sensor(coordinator),
-            DanfossTemperature02Sensor(coordinator),
-            DanfossTemperature03Sensor(coordinator),
-            DanfossTemperature04Sensor(coordinator),
+            DanfossOutdoorTemperatureSensor(coordinator),
+            DanfossSupplyTemperatureSensor(coordinator),
+            DanfossExtractTemperatureSensor(coordinator),
+            DanfossExhaustTemperatureSensor(coordinator),
             DanfossHumiditySensor(coordinator),
             DanfossCurrentSupplyStepSensor(coordinator),
             DanfossCurrentExtractStepSensor(coordinator),
             DanfossBypassActiveSensor(coordinator),
             DanfossAlarmCodeSensor(coordinator),
             DanfossAlarmDescriptionSensor(coordinator),
+            DanfossFilterFoulingSensor(coordinator),
+            DanfossSupplyFanSpeedSensor(coordinator),
+            DanfossExtractFanSpeedSensor(coordinator),
+           
         ]
     )
 
@@ -47,12 +53,13 @@ class DanfossFanStepSensor(DanfossEntity, SensorEntity):
         return self.coordinator.data["fan_step"]
 
 
-class DanfossTemperature01Sensor(DanfossEntity, SensorEntity):
+class DanfossOutdoorTemperatureSensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Outdoor Temperature"
     _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_suggested_display_precision = 1
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -60,15 +67,16 @@ class DanfossTemperature01Sensor(DanfossEntity, SensorEntity):
 
     @property
     def native_value(self):
-        return self.coordinator.data["temp_01"]
+        return self.coordinator.data["outdoor_temperature"]
 
 
-class DanfossTemperature02Sensor(DanfossEntity, SensorEntity):
+class DanfossSupplyTemperatureSensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Supply Temperature"
     _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_suggested_display_precision = 1
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -76,15 +84,16 @@ class DanfossTemperature02Sensor(DanfossEntity, SensorEntity):
 
     @property
     def native_value(self):
-        return self.coordinator.data["temp_02"]
+        return self.coordinator.data["supply_temperature"]
 
 
-class DanfossTemperature03Sensor(DanfossEntity, SensorEntity):
+class DanfossExtractTemperatureSensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Extract Temperature"
     _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_suggested_display_precision = 1
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -92,15 +101,16 @@ class DanfossTemperature03Sensor(DanfossEntity, SensorEntity):
 
     @property
     def native_value(self):
-        return self.coordinator.data["temp_03"]
+        return self.coordinator.data["extract_temperature"]
 
 
-class DanfossTemperature04Sensor(DanfossEntity, SensorEntity):
+class DanfossExhaustTemperatureSensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Exhaust Temperature"
     _attr_device_class = SensorDeviceClass.TEMPERATURE
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_suggested_display_precision = 1
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -108,8 +118,8 @@ class DanfossTemperature04Sensor(DanfossEntity, SensorEntity):
 
     @property
     def native_value(self):
-        return self.coordinator.data["temp_04"]
-    
+        return self.coordinator.data["exhaust_temperature"]
+
 class DanfossHumiditySensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Relative Humidity"
@@ -131,6 +141,7 @@ class DanfossCurrentSupplyStepSensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Current Supply Step"
     _attr_icon = "mdi:fan-chevron-down"
+    _attr_state_class = SensorStateClass.MEASUREMENT
 
     def __init__(self, coordinator):        
         super().__init__(coordinator)
@@ -145,6 +156,7 @@ class DanfossCurrentExtractStepSensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Current Extract Step"
     _attr_icon = "mdi:fan-chevron-up"
+    _attr_state_class = SensorStateClass.MEASUREMENT
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -167,9 +179,9 @@ class DanfossBypassActiveSensor(DanfossEntity, SensorEntity):
     @property
     def native_value(self):
         return (
-            "Active"
+            "On"
             if self.coordinator.data["bypass_active"]
-            else "Inactive"
+            else "Off"
         )
 
 
@@ -177,6 +189,7 @@ class DanfossAlarmCodeSensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Alarm Code"
     _attr_icon = "mdi:alert-circle-outline"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -190,6 +203,7 @@ class DanfossAlarmDescriptionSensor(DanfossEntity, SensorEntity):
 
     _attr_name = "Alarm Description"
     _attr_icon = "mdi:text-box-outline"
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -200,4 +214,50 @@ class DanfossAlarmDescriptionSensor(DanfossEntity, SensorEntity):
 
         return get_alarm_text(
             self.coordinator.data["alarm_code"]
-        )    
+        )
+
+class DanfossFilterFoulingSensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Filter Fouling"
+    _attr_native_unit_of_measurement = "%"
+    _attr_icon = "mdi:air-filter"
+
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_filter_fouling"
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["filter_fouling"]
+
+class DanfossSupplyFanSpeedSensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Supply Fan Speed"
+    _attr_native_unit_of_measurement = "rpm"
+    _attr_icon = "mdi:fan"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_supply_fan_speed"
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["supply_fan_speed"]
+
+
+class DanfossExtractFanSpeedSensor(DanfossEntity, SensorEntity):
+
+    _attr_name = "Extract Fan Speed"
+    _attr_native_unit_of_measurement = "rpm"
+    _attr_icon = "mdi:fan"
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_extract_fan_speed"
+
+    @property
+    def native_value(self):
+        return self.coordinator.data["extract_fan_speed"]

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import socket
 import logging
-from time import time
+import time
 
 from .const import (
     PORT,
@@ -13,10 +13,10 @@ from .const import (
     PARAM_BASIC_SUPPLY,
     PARAM_BASIC_EXTRACT,
     PARAM_RUN_MODE,
-    PARAM_TEMP_01,
-    PARAM_TEMP_02,
-    PARAM_TEMP_03,
-    PARAM_TEMP_04,
+    PARAM_OUTDOOR_TEMPERATURE,
+    PARAM_SUPPLY_TEMPERATURE,
+    PARAM_EXTRACT_TEMPERATURE,
+    PARAM_EXHAUST_TEMPERATURE,
     PARAM_HUMIDITY,
     PARAM_BYPASS,
     PARAM_BOOST,
@@ -28,7 +28,11 @@ from .const import (
     PARAM_ALARM_CODE,
     PARAM_CURRENT_SUPPLY_STEP,
     PARAM_CURRENT_EXTRACT_STEP,
-)
+    PARAM_FILTER_FOULING,
+    PARAM_FILTER_RESET,
+    PARAM_SUPPLY_FAN_SPEED,
+    PARAM_EXTRACT_FAN_SPEED,
+    )
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -87,16 +91,19 @@ class DanfossClient:
             self.disconnect()
             raise
         
-    def read_parameter(self, parameter: int):
+    def read_parameter(
+        self,
+        parameter: int,
+        endpoint: int = ENDPOINT,
+    ):
 
         frame = bytearray(63)
 
-        frame[0] = ENDPOINT
+        frame[0] = endpoint
         frame[1] = 0x04
 
         frame[2] = (parameter >> 8) & 0xFF
         frame[3] = parameter & 0xFF
-
 
         return self._exchange(frame)
 
@@ -110,21 +117,31 @@ class DanfossClient:
         frame[2] = (parameter >> 8) & 0xFF
         frame[3] = parameter & 0xFF
 
+        # Native Danfoss protocol stores BYTE value at offset 4.
         frame[4] = value
 
 
         return self._exchange(frame)
-    def get_temp_01(self):
-        return self.get_parameter_short(PARAM_TEMP_01)
+    def get_outdoor_temperature(self):
+        return self.get_parameter_short(PARAM_OUTDOOR_TEMPERATURE)
 
-    def get_temp_02(self):
-        return self.get_parameter_short(PARAM_TEMP_02)
+    def get_supply_temperature(self):
+        return self.get_parameter_short(
+            PARAM_SUPPLY_TEMPERATURE,
+            endpoint=4,
+        )
 
-    def get_temp_03(self):
-        return self.get_parameter_short(PARAM_TEMP_03)
+    def get_extract_temperature(self):
+        return self.get_parameter_short(
+            PARAM_EXTRACT_TEMPERATURE,
+            endpoint=4,
+        )
 
-    def get_temp_04(self):
-        return self.get_parameter_short(PARAM_TEMP_04)
+    def get_exhaust_temperature(self):
+        return self.get_parameter_short(
+            PARAM_EXHAUST_TEMPERATURE,
+            endpoint=4,
+        )
 
     #
     # Danfoss API
@@ -137,16 +154,28 @@ class DanfossClient:
         self.write_parameter(PARAM_FAN_STEP, step)
         return self.get_fan_step()
 
-    def get_parameter_byte(self, parameter: int):
-        data = self.read_parameter(parameter)
+    def get_parameter_byte(
+        self,
+        parameter: int,
+        endpoint: int = ENDPOINT,
+    ):
+        data = self.read_parameter(parameter, endpoint)
         return data[0]
     
-    def get_parameter_bool(self, parameter):
-        return self.get_parameter_byte(parameter) != 0
+    def get_parameter_bool(
+        self,
+        parameter: int,
+        endpoint: int = ENDPOINT,
+    ):
+        return self.get_parameter_byte(parameter, endpoint) != 0
 
-    def get_parameter_short(self, parameter):
+    def get_parameter_short(
+        self,
+        parameter: int,
+        endpoint: int = ENDPOINT,
+    ):
 
-        data = self.read_parameter(parameter)
+        data = self.read_parameter(parameter, endpoint)
 
         value = (data[0] << 8) | data[1]
 
@@ -155,12 +184,15 @@ class DanfossClient:
 
         return value / 100.0
     
-    def get_parameter_word(self, parameter):
+    def get_parameter_word(
+        self,
+        parameter: int,
+        endpoint: int = ENDPOINT,
+    ):
 
-        data = self.read_parameter(parameter)
+        data = self.read_parameter(parameter, endpoint)
 
         return (data[0] << 8) | data[1]
-    
     #
     # Current airflow
     #
@@ -268,7 +300,6 @@ class DanfossClient:
             1 if enabled else 0,
         )   
 
-        import time
         time.sleep(0.1)
 
         return self.get_boost()
@@ -304,3 +335,32 @@ class DanfossClient:
 
     def get_alarm_code(self):
         return self.get_parameter_word(PARAM_ALARM_CODE)
+    
+    #
+    # Filter
+    #
+
+    def get_filter_fouling(self):
+        """Return filter fouling in percent."""
+
+        value = self.get_parameter_byte(PARAM_FILTER_FOULING)
+
+        return round(value * 100 / 255)
+
+    def reset_filter(self):
+        """Reset filter timer."""
+        self.write_parameter(PARAM_FILTER_RESET, 1)
+
+    def get_supply_fan_speed(self):
+        return self.get_parameter_word(
+            PARAM_SUPPLY_FAN_SPEED,
+            endpoint=4,
+        )
+
+    def get_extract_fan_speed(self):
+        return self.get_parameter_word(
+            PARAM_EXTRACT_FAN_SPEED,
+            endpoint=4,
+        )
+    
+    

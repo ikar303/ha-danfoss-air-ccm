@@ -14,6 +14,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities(
         [
             DanfossRestoreInstallerSettingsButton(coordinator),
+            DanfossFilterResetButton(coordinator),
         ]
     )
 
@@ -36,3 +37,16 @@ class DanfossRestoreInstallerSettingsButton(
     async def async_press(self):
 
         await self.coordinator.restore_installer_settings()
+
+class DanfossFilterResetButton(DanfossEntity, ButtonEntity):
+
+    _attr_name = "Reset Filter"
+    _attr_icon = "mdi:air-filter"
+    _attr_entity_category = EntityCategory.CONFIG
+
+    def __init__(self, coordinator):
+        super().__init__(coordinator)
+        self._attr_unique_id = "danfoss_filter_reset"
+
+    async def async_press(self):
+        await self.coordinator.reset_filter()

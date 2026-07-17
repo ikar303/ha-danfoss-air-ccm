@@ -14,7 +14,7 @@ class DanfossEntity(CoordinatorEntity):
     _attr_has_entity_name = True
 
     @property
-    def device_info(self):
+    def device_info(self) -> DeviceInfo:
         return DeviceInfo(
             identifiers={(DOMAIN, "danfoss_air_ccm")},
             manufacturer="Danfoss",

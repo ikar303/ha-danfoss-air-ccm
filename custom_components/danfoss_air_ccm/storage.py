@@ -21,7 +21,7 @@ class DanfossStorage:
             STORAGE_KEY,
         )
 
-    async def load(self):
+    async def load(self) -> dict:
         data = await self.store.async_load()
 
         if data is None:
@@ -29,5 +29,6 @@ class DanfossStorage:
 
         return data
 
-    async def save(self, data):
+    async def save(self, data: dict) -> None:
         await self.store.async_save(data)
+

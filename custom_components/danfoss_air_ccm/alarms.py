@@ -24,8 +24,7 @@ ALARM_TEXT = {
 ALARM_DESCRIPTION = {
 
     2: (
-        "Your DANFOSS AIR UNIT requires a new set of air filters. "
-        "Replace the filters and reset the filter counter."
+        "Replace air filters and reset the filter counter."
     ),
 
     3: (
@@ -33,7 +32,7 @@ ALARM_DESCRIPTION = {
     ),
 
     32: (
-        "Power HRV Unit OFF and ON to restart."
+        "Supply air temperature below minimum threshold. Restart the unit if the problem persists."
     ),
 
     129: (

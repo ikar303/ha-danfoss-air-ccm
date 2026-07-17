@@ -13,7 +13,10 @@ PLATFORMS = [
 ]
 
 
-async def async_setup(hass, config):
+async def async_setup(
+    hass: HomeAssistant,
+    config,
+) -> bool:
     return True
 
 
@@ -31,9 +34,7 @@ async def async_setup_entry(
 
     await coordinator.async_initialize_storage()
 
-    hass.data.setdefault(DOMAIN, {})[
-        entry.entry_id
-    ] = coordinator
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
     await hass.config_entries.async_forward_entry_setups(
         entry,
@@ -44,9 +45,9 @@ async def async_setup_entry(
 
 
 async def async_unload_entry(
-    hass,
-    entry,
-):
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+) -> bool:
 
     return await hass.config_entries.async_unload_platforms(
         entry,
