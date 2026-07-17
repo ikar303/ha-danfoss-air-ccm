@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.helpers.entity import EntityCategory
 
 from .const import DOMAIN
 from .entity import DanfossEntity
@@ -22,6 +23,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class DanfossBypassSwitch(DanfossEntity, SwitchEntity):
 
     _attr_name = "Bypass"
+    _attr_icon = "mdi:valve"
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
@@ -40,10 +42,12 @@ class DanfossBypassSwitch(DanfossEntity, SwitchEntity):
 class DanfossBoostSwitch(DanfossEntity, SwitchEntity):
 
     _attr_name = "Boost"
+    _attr_icon = "mdi:rocket-launch"
 
     def __init__(self, coordinator):
         super().__init__(coordinator)
         self._attr_unique_id = "danfoss_boost"
+        
 
     @property
     def is_on(self):
@@ -59,6 +63,8 @@ class DanfossBoostSwitch(DanfossEntity, SwitchEntity):
 class DanfossBoostAutoSwitch(DanfossEntity, SwitchEntity):
 
     _attr_name = "Boost Auto"
+    _attr_icon = "mdi:auto-mode"
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator):
         super().__init__(coordinator)

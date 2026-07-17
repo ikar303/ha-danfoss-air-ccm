@@ -46,35 +46,56 @@ class DanfossCoordinator(DataUpdateCoordinator):
 
     def _read_all(self):
 
+        
+
         return {
+
+            # Fan
             "fan_step": self.client.get_fan_step(),
 
-            "temp_01": self.client.get_temp_01(),
-            "temp_02": self.client.get_temp_02(),
-            "temp_03": self.client.get_temp_03(),
-            "temp_04": self.client.get_temp_04(),
+            # Temperatures
+            "outdoor_temperature": self.client.get_outdoor_temperature(),
+            "supply_temperature": self.client.get_supply_temperature(),
+            "extract_temperature": self.client.get_extract_temperature(),
+            "exhaust_temperature": self.client.get_exhaust_temperature(),
 
+            # Humidity
             "humidity": self.client.get_humidity(),
-          
+
+            # Current airflow
+            "current_supply_step": self.client.get_current_supply_step(),
+            "current_extract_step": self.client.get_current_extract_step(),
+
+            # Installer airflow
             "basic_supply_step": self.client.get_basic_supply(),
             "basic_extract_step": self.client.get_basic_extract(),
 
+            # Bypass
             "bypass": self.client.get_bypass(),
-            
+            "bypass_active": self.client.get_bypass_active(),
+
+            # Boost
             "boost": self.client.get_boost(),
             "boost_timer": self.client.get_boost_timer(),
             "boost_max_step": self.client.get_boost_max_step(),
             "boost_auto": self.client.get_boost_auto(),
+
+            # Run mode
             "run_mode": self.client.get_run_mode(),
 
-            "bypass_active": self.client.get_bypass_active(),
-
+            # Diagnostics
             "alarm_code": self.client.get_alarm_code(),
-            "current_supply_step": self.client.get_current_supply_step(),
-            "current_extract_step": self.client.get_current_extract_step(),
-        }
 
-    async def set_fan_step(self, value):
+            # Filter
+            "filter_fouling": self.client.get_filter_fouling(),
+
+            # Fan speed
+            "supply_fan_speed": self.client.get_supply_fan_speed(),
+            "extract_fan_speed": self.client.get_extract_fan_speed(),
+        }
+    
+
+    async def set_fan_step(self, value: int):
 
         await self.hass.async_add_executor_job(
             self.client.set_fan_step,
@@ -83,17 +104,17 @@ class DanfossCoordinator(DataUpdateCoordinator):
 
         await self.async_request_refresh()
 
-    async def set_basic_supply(self, value):
+    async def set_basic_supply(self, value: int):
 
         await self.hass.async_add_executor_job(
             self.client.set_basic_supply,
             value,
-    )
+        )
 
         await self.async_request_refresh()
 
 
-    async def set_basic_extract(self, value):
+    async def set_basic_extract(self, value: int):
 
         await self.hass.async_add_executor_job(
             self.client.set_basic_extract,
@@ -121,7 +142,7 @@ class DanfossCoordinator(DataUpdateCoordinator):
         await self.async_request_refresh()
 
 
-    async def set_boost_timer(self, value):
+    async def set_boost_timer(self, value: int):
 
         await self.hass.async_add_executor_job(
             self.client.set_boost_timer,
@@ -131,7 +152,7 @@ class DanfossCoordinator(DataUpdateCoordinator):
         await self.async_request_refresh()
 
 
-    async def set_boost_max_step(self, value):
+    async def set_boost_max_step(self, value: int):
 
         await self.hass.async_add_executor_job(
             self.client.set_boost_max_step,
@@ -214,3 +235,11 @@ class DanfossCoordinator(DataUpdateCoordinator):
         """Return stored installer settings."""
 
         return await self.storage.load()
+    
+    async def reset_filter(self):
+
+        await self.hass.async_add_executor_job(
+            self.client.reset_filter,
+        )
+
+        await self.async_request_refresh()

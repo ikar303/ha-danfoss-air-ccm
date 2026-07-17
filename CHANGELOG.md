@@ -6,29 +6,59 @@ The format is based on Keep a Changelog.
 
 ---
 
+## [0.4.1] - 2026-07
+
+### Added
+
+- Supply Fan Speed sensor (RPM)
+- Extract Fan Speed sensor (RPM)
+- Native fan speed reading using endpoint 4
+- Connection validation during Config Flow setup
+
+### Changed
+
+- Updated PARAMETERS.md
+- Updated PROTOCOL.md
+- Updated README
+- Updated ROADMAP
+- Improved parameter documentation
+
+### Fixed
+
+- Correct endpoint handling for RPM parameters
+- Improved sensor naming consistency
+- Removed obsolete Resultant Fan Step entity
+
+---
+
 ## [0.4.0] - 2026-07
 
 ### Added
 
 - Boost switch
 - Boost Duration control
-- Boost Maximum Step control
+- Maximum Boost Step control
 - Auto Boost switch
-- Run Mode selector (Demand / Program / Manual)
+- Native Run Mode Select entity (Demand / Program / Manual)
 - Alarm Code diagnostic sensor
-- Alarm Description sensor
+- Alarm Description diagnostic sensor
+- Filter Fouling diagnostic sensor
+- Filter Reset button
 - Bypass Active sensor
 - Native alarm database (`alarms.py`)
-- ALARMS.md documentation
+- PARAMETERS.md documentation
 - PROTOCOL.md documentation
+- ROADMAP.md documentation
 
 ### Changed
 
 - Boost Duration limited to 24 hours
 - Boost configuration is automatically written before enabling Boost
+- Renamed temperature parameter identifiers for improved readability
 - Improved protocol documentation
 - Expanded parameter documentation
-- Updated project roadmap and README
+- Updated README
+- Updated project roadmap
 
 ### Fixed
 
@@ -38,6 +68,7 @@ The format is based on Keep a Changelog.
 - Correct Current Extract Step sensor
 - Improved Run Mode handling
 
+---
 
 ## [0.3.0] - 2026-07
 
@@ -91,8 +122,6 @@ The format is based on Keep a Changelog.
 
 ### Fixed
 
-- Removed invalid Supply Fan Speed parameter (5200)
-- Removed invalid Extract Fan Speed parameter (5201)
 - Relative Humidity conversion using the original Danfoss algorithm (`value × 100 / 255`)
 
 ---

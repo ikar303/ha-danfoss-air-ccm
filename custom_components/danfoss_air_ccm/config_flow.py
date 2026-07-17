@@ -6,6 +6,7 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
 
 from .const import DOMAIN
+from .protocol import DanfossClient
 
 
 class DanfossAirConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -18,10 +19,24 @@ class DanfossAirConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
 
-            return self.async_create_entry(
-                title=user_input[CONF_HOST],
-                data=user_input,
-            )
+            client = DanfossClient(user_input[CONF_HOST])
+
+            try:
+                await self.hass.async_add_executor_job(
+                    client.get_fan_step,
+                )
+
+            except Exception:
+                errors["base"] = "cannot_connect"
+
+            finally:
+                client.disconnect()
+
+            if not errors:
+                return self.async_create_entry(
+                    title=user_input[CONF_HOST],
+                    data=user_input,
+                )
 
         schema = vol.Schema(
             {

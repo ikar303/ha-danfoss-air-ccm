@@ -1,0 +1,7 @@
+{
+  "config": {
+    "error": {
+      "cannot_connect": "Nie można połączyć się z centralą Danfoss Air CCM."
+    }
+  }
+}
