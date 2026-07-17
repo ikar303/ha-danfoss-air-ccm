@@ -10,7 +10,7 @@ Native Home Assistant integration for **Danfoss Air CCM** ventilation units usin
 
 ---
 
-# Highlights
+# Features
 
 - 🚀 Native Danfoss TCP protocol
 - 🏠 100% Local communication
@@ -18,12 +18,13 @@ Native Home Assistant integration for **Danfoss Air CCM** ventilation units usin
 - ⚡ No cloud
 - 🔌 No Modbus
 - 🤖 No Node-RED
+- 🔍 Reverse engineered from the official Danfoss PC Tool
 
 ---
 
 # Status
 
-**Current version:** `0.3.0`
+**Current version:** `0.4.1`
 
 | Component | Status |
 |-----------|--------|
@@ -32,49 +33,45 @@ Native Home Assistant integration for **Danfoss Air CCM** ventilation units usin
 | Native TCP | ✅ |
 | HACS | 🚧 |
 | Fan Control | ✅ |
+| Fan RPM | ✅ |
 | Temperatures | ✅ |
 | Relative Humidity | ✅ |
+| Boost | ✅ |
+| Run Mode | ✅ |
 | Bypass | ✅ |
-| Installer Mode | ✅ |
+| Diagnostics | ✅ |
 | Scheduler | 🚧 |
 
 ---
 
-# Features
+# Supported Features
 
-## Communication
-
-- ✅ Native TCP communication (Port **30046**)
-- ✅ Local communication only
-- ✅ No cloud
-- ✅ No Modbus
-- ✅ No Node-RED
-
-## Home Assistant
-
-- ✅ Config Flow
-- ✅ Native entities
-- ✅ Local polling
-
-## Controls
-
-- ✅ Fan Step control (1–10)
-- ✅ Basic Supply Step
-- ✅ Basic Extract Step
-- ✅ Native Bypass switch
-
-## Sensors
-
-- ✅ Outdoor Temperature
-- ✅ Supply Temperature
-- ✅ Extract Temperature
-- ✅ Exhaust Temperature
-- ✅ Relative Humidity
-
-## Installer Mode
-
-- ✅ Persistent installer airflow settings
-- ✅ Restore Installer Settings
+| Feature | Status |
+|----------|:------:|
+| Fan Step Control | ✅ |
+| Current Supply Step | ✅ |
+| Current Extract Step | ✅ |
+| Supply Fan Speed (RPM) | ✅ |
+| Extract Fan Speed (RPM) | ✅ |
+| Run Mode | ✅ |
+| Basic Supply Step | ✅ |
+| Basic Extract Step | ✅ |
+| Boost | ✅ |
+| Boost Duration | ✅ |
+| Maximum Boost Step | ✅ |
+| Auto Boost | ✅ |
+| Bypass | ✅ |
+| Bypass Active | ✅ |
+| Outdoor Temperature | ✅ |
+| Supply Temperature | ✅ |
+| Extract Temperature | ✅ |
+| Exhaust Temperature | ✅ |
+| Relative Humidity | ✅ |
+| Alarm Code | ✅ |
+| Alarm Description | ✅ |
+| Filter Fouling | ✅ |
+| Filter Reset | ✅ |
+| Installer Mode | ✅ |
 
 ---
 
@@ -93,9 +90,9 @@ Additional Danfoss Air models will be tested in future releases.
 
 ## HACS
 
-Support for HACS custom repositories is planned.
+HACS support is currently under development.
 
-Until then, install manually.
+Until then install manually.
 
 ## Manual Installation
 
@@ -113,23 +110,43 @@ to
 
 Restart Home Assistant.
 
+Add the integration from:
+
+**Settings → Devices & Services → Add Integration**
+
 ---
 
 # Supported Parameters
 
 | Address | Parameter | Type | Read | Write |
 |--------:|-----------|------|:----:|:-----:|
+| 1008 | Alarm Code | WORD | ✅ | ❌ |
+| 5138 | Run Mode | BYTE | ✅ | ✅ |
 | 5160 | Current Supply Step | BYTE | ✅ | ❌ |
 | 5161 | Current Extract Step | BYTE | ✅ | ❌ |
 | 5184 | Basic Supply Step | BYTE | ✅ | ✅ |
 | 5185 | Basic Extract Step | BYTE | ✅ | ✅ |
+| 5200 | Supply Fan Speed | WORD | ✅ | ❌ |
+| 5201 | Extract Fan Speed | WORD | ✅ | ❌ |
 | 5216 | Bypass | BOOL | ✅ | ✅ |
-| 5232 | Relative Humidity | PERCENT | ✅ | ❌ |
+| 5223 | Bypass Active | BOOL | ✅ | ❌ |
+| 5226 | Filter Fouling | BYTE | ✅ | ❌ |
+| 5231 | Filter Reset | BOOL | ❌ | ✅ |
+| 5232 | Relative Humidity | BYTE | ✅ | ❌ |
 | 5234 | Outdoor Temperature | SHORT | ✅ | ❌ |
 | 5235 | Supply Temperature | SHORT | ✅ | ❌ |
 | 5236 | Extract Temperature | SHORT | ✅ | ❌ |
 | 5237 | Exhaust Temperature | SHORT | ✅ | ❌ |
+| 5424 | Boost | BOOL | ✅ | ✅ |
+| 5425 | Boost Timer | BYTE | ✅ | ✅ |
+| 5536 | Program Number | BYTE | ✅ | ✅ |
+| 5890 | Auto Boost | BOOL | ✅ | ✅ |
+| 5891 | Maximum Boost Step | BYTE | ✅ | ✅ |
 | 6017 | Fan Step | BYTE | ✅ | ✅ |
+
+> **Note**
+>
+> Supply Fan Speed (5200) and Extract Fan Speed (5201) are available through **endpoint 4** of the native Danfoss TCP protocol.
 
 More parameters are continuously being reverse engineered and added.
 
@@ -142,72 +159,60 @@ More parameters are continuously being reverse engineered and added.
 - Fan Step
 - Current Supply Step
 - Current Extract Step
+- Supply Fan Speed
+- Extract Fan Speed
 - Outdoor Temperature
 - Supply Temperature
 - Extract Temperature
 - Exhaust Temperature
 - Relative Humidity
+- Alarm Code
+- Alarm Description
+- Filter Fouling
+- Bypass Active
 
 ## Numbers
 
 - Fan Step
 - Basic Supply Step
 - Basic Extract Step
+- Boost Duration
+- Maximum Boost Step
 
 ## Switches
 
 - Bypass
+- Boost
+- Auto Boost
+
+## Selects
+
+- Run Mode
 
 ## Buttons
 
 - Restore Installer Settings
+- Reset Filter
 
 ---
 
-# Roadmap
-
-## Version 0.4.0
-
-- Boost
-- Boost Timer
-- Maximum Boost Step
-- Alarm Code
-- Filter Fouling
-- Filter Reset
-- Bypass Active
-
-## Version 0.5.0
-
-- Bypass Timer
-- Bypass Outdoor Temperature
-- Bypass Room Temperature
-- Auto Bypass
-- Resultant Fan Step
-
-## Version 0.6.0
-
-- Weekly Scheduler
-- Weekly Profiles
-- Operating Modes
-
-## Version 1.0.0
-
-- Full parameter support
-- Automatic device discovery
-- HACS release
-- Complete diagnostics
-- Translation support
-- Stable release
-
----
-
-# Development
+# Reverse Engineering
 
 This integration communicates directly with the Danfoss controller using the original Danfoss TCP protocol on **port 30046**.
 
-The protocol has been reverse engineered from the official Danfoss PC Tool.
+The implementation has been verified against:
 
-## Design Goals
+- Official Danfoss PC Tool
+- Original Danfoss HRV .NET source code
+- Wireshark packet captures
+- Live testing on Danfoss Air CCM
+- Live testing on Danfoss W1A2
+
+No Modbus protocol is used.
+
+---
+
+# Design Goals
 
 - Native TCP communication
 - Local communication only
@@ -218,12 +223,42 @@ The protocol has been reverse engineered from the official Danfoss PC Tool.
 
 ---
 
+# Roadmap
+
+## Version 0.5.0
+
+- Bypass Timer
+- Bypass Outdoor Temperature
+- Bypass Room Temperature
+- Auto Bypass
+- Defrost Status
+- Away Mode (Switch)
+
+## Version 0.6.0
+
+- Weekly Scheduler
+- Weekly Profiles
+- Time Programs
+- Operating Modes
+
+## Version 1.0.0
+
+- Full protocol support
+- Automatic device discovery
+- HACS release
+- Complete diagnostics
+- Translation support
+- Stable release
+
+---
+
 # Project Structure
 
 ```text
 custom_components/
 └── danfoss_air_ccm/
     ├── __init__.py
+    ├── alarms.py
     ├── button.py
     ├── config_flow.py
     ├── const.py
@@ -231,6 +266,7 @@ custom_components/
     ├── entity.py
     ├── number.py
     ├── protocol.py
+    ├── select.py
     ├── sensor.py
     ├── storage.py
     └── switch.py
@@ -242,8 +278,9 @@ custom_components/
 
 - 📄 README.md
 - 📄 PARAMETERS.md
-- 📄 CHANGELOG.md
+- 📄 PROTOCOL.md
 - 📄 ROADMAP.md
+- 📄 CHANGELOG.md
 
 ---
 
@@ -257,7 +294,7 @@ Screenshots are available in the `screenshots` directory.
 
 Bug reports, feature requests and pull requests are welcome.
 
-If you discover additional Danfoss Air parameters or own another supported controller, contributions and testing are greatly appreciated.
+If you own another Danfoss Air controller or discover additional parameters, contributions are highly appreciated.
 
 ---
 
